@@ -46,6 +46,70 @@ func applicationWillTerminate(_ application: UIApplication) {
         return container
     }()
 ```
+### CRUD 
+
+```swift
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+```
+#### Save Item
+```swift
+ func saveItems() {
+        
+        do {
+          try context.save()
+        } catch {
+           print("Error saving context \(error)")
+        }
+        
+    }
+ 
+ ``` 
+ #### Load Item
+
+ ```swift
+ func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+        
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!) //QUERY
+        
+        if let addtionalPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, addtionalPredicate])
+        } else {
+            request.predicate = categoryPredicate
+        }
+
+        
+        do {
+            ARRAY_OF_OBJECTS = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context \(error)")
+        }
+        
+        
+    }
+ ```
+ #### Update
+ 
+```swift
+  itemArray[0].done = true
+  saveItems()
+```
+ #### Select
+ 
+ ```swift
+   let request : NSFetchRequest<Item> = Item.fetchRequest()
+   let predicate = NSPredicate(format: "title CONTAINS[cd] %@", INPUT_@)  
+   request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)  
+   loadItems(with: request, predicate: predicate)
+ ```
+ #### Delete
+ 
+ ```swift
+ 
+ context.delete(itemArray[0]) //Temporary
+ itemArray.remove(at: 0)
+ saveItems()
+ 
+ ```
 
 ## Alert
 
@@ -61,6 +125,11 @@ func applicationWillTerminate(_ application: UIApplication) {
         }
         alert.addAction(action)
         present(alert, animated: true,completion: nil)       
+```
+## Buttons
+
+```swift
+@IBAction func addButtonPressed(_ sender: UIBarButtonItem) {}
 ```
 
 ## TableView
